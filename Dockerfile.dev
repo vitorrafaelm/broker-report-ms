@@ -1,0 +1,78 @@
+FROM ruby:3.2.2 as builder
+
+RUN apt-get update -qq \
+    && apt-get upgrade -y \
+    && cd /tmp \
+    && wget -O - https://github.com/jemalloc/jemalloc/releases/download/5.3.0/jemalloc-5.3.0.tar.bz2 | tar -xj && \
+    cd jemalloc-5.3.0 && \
+    ./configure && \
+    make && \
+    make install
+
+FROM ruby:3.2.2
+
+# Set labels for the image
+LABEL maintainer="Todo Cartoes"
+
+# Set container environment variables
+ENV BUNDLER_VERSION='2.1.2'
+
+# Set container arguments
+ARG APP_PATH=/app
+ARG NODE_MAJOR=18
+
+# Set default shell call
+# https://github.com/hadolint/hadolint/wiki/DL4006
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+
+# Copy jemalloc Set LD_PRELOAD to use it instead malloc
+COPY --from=builder /usr/local/lib/libjemalloc.so.2 /usr/local/lib/
+ENV LD_PRELOAD=/usr/local/lib/libjemalloc.so.2
+
+# Update Debian NodeJS repository, update OS packages and install mandatory app packages
+RUN apt-get update -qq \
+ && apt-get upgrade -y \
+ && apt-get install -y --no-install-recommends \
+       ca-certificates \
+       curl \
+       gnupg \
+ && mkdir -p /etc/apt/keyrings \
+ && curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg \
+ && echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_${NODE_MAJOR}.x nodistro main" | tee /etc/apt/sources.list.d/nodesource.list \
+ && apt-get update -qq \
+ && apt-get install -y --no-install-recommends \
+        build-essential \
+        nodejs \
+        postgresql-client \
+        net-tools \
+ && apt-get clean \
+ && rm -rf /var/lib/apt/lists/*
+
+# Install bundler (Ruby dependency manager)
+RUN gem install bundler --no-document -v '2.1.2'
+
+# Add a script to be executed every time the container starts
+COPY entrypoint.sh /usr/bin/
+RUN chmod +x /usr/bin/entrypoint.sh
+
+# Set working directory
+WORKDIR $APP_PATH
+
+# Copy Gemfile and Gemfile.lock
+COPY Gemfile* $APP_PATH/
+
+# Extra bundler configurations
+RUN bundle config specific_platform x86_64-linux \
+ && bundle config --local build.sassc --disable-march-tune-native
+
+# Install Ruby dependences
+RUN bundle install
+
+# Set user
+USER $APP_USER
+
+# Copy application files
+COPY . $APP_PATH/
+
+# Set the entrypoint to the script
+ENTRYPOINT ["entrypoint.sh"]
