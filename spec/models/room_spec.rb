@@ -10,7 +10,7 @@ RSpec.describe Room, type: :model do
     end
 
     present_attributes.each do |attribute|
-      it 'Property should not be valid' do
+      it 'Room should not be valid' do
         subject[attribute] = ''
         expect(subject).not_to be_valid
         expect(subject.errors[attribute]).to include("can't be blank")
