@@ -12,7 +12,7 @@ services:
       - POSTGRES_PASSWORD=postgres
       - DB_USERNAME=postgres
     networks:
-      - broker_report
+      - broker-project
   web:
     stdin_open: true
     tty: true
@@ -28,13 +28,40 @@ services:
       - "3001:3000"
     depends_on:
       - db
+      - redis
     networks:
-      - broker_report
+      - broker-project
+      - default
+  redis:
+    image: redis:alpine
+    env_file:
+    - .env
+    command: redis-server
+    ports:
+      - "6380:6380"
+    expose:
+      - "6380"
+    networks:
+      - default
+  sneakers:
+    stdin_open: true
+    tty: true
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    command: bundle exec rake sneakers:run
+    volumes:
+      - .:/app
+    env_file: .env
+    depends_on:
+      - web
+    networks:
+      - broker-project
       - default
 
 volumes:
   database:
 
 networks:
-  broker_report:
+  broker-project:
     external: true
