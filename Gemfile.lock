@@ -66,10 +66,15 @@ GEM
       i18n (>= 1.6, < 2)
       minitest (>= 5.1)
       tzinfo (~> 2.0)
+    amq-protocol (2.3.2)
     bootsnap (1.17.0)
       msgpack (~> 1.2)
     builder (3.2.4)
+    bunny (2.22.0)
+      amq-protocol (~> 2.3, >= 2.3.1)
+      sorted_set (~> 1, >= 1.0.2)
     concurrent-ruby (1.2.2)
+    connection_pool (2.4.1)
     crass (1.0.6)
     date (3.3.3)
     debug (1.8.0)
@@ -90,8 +95,11 @@ GEM
     irb (1.8.3)
       rdoc
       reline (>= 0.3.8)
+    json (2.6.3)
     jsonapi-serializer (2.2.0)
       activesupport (>= 4.2)
+    kramdown (2.4.0)
+      rexml
     loofah (2.21.4)
       crass (~> 1.0.2)
       nokogiri (>= 1.12.0)
@@ -161,10 +169,16 @@ GEM
       thor (~> 1.0)
       zeitwerk (~> 2.5)
     rake (13.1.0)
+    rbtree (0.4.6)
     rdoc (6.5.0)
       psych (>= 4.0.0)
+    redis (5.0.8)
+      redis-client (>= 0.17.0)
+    redis-client (0.18.0)
+      connection_pool
     reline (0.3.9)
       io-console (~> 0.5)
+    rexml (3.2.6)
     rspec-core (3.12.2)
       rspec-support (~> 3.12.0)
     rspec-expectations (3.12.3)
@@ -182,8 +196,21 @@ GEM
       rspec-mocks (~> 3.12)
       rspec-support (~> 3.12)
     rspec-support (3.12.1)
+    serverengine (2.0.7)
+      sigdump (~> 0.2.2)
+    set (1.0.3)
     shoulda-matchers (3.1.3)
       activesupport (>= 4.0.0)
+    sigdump (0.2.5)
+    sneakers (2.11.0)
+      bunny (~> 2.12)
+      concurrent-ruby (~> 1.0)
+      rake
+      serverengine (~> 2.0.5)
+      thor
+    sorted_set (1.0.3)
+      rbtree
+      set (~> 1.0)
     stringio (3.0.8)
     thor (1.3.0)
     timeout (0.4.0)
@@ -201,14 +228,20 @@ PLATFORMS
 
 DEPENDENCIES
   bootsnap
+  bunny (>= 2.19.0)
   debug
   factory_bot_rails
+  json
   jsonapi-serializer
+  kramdown
   pg (~> 1.1)
   puma (~> 5.0)
   rails (~> 7.0.8)
+  rake
+  redis
   rspec-rails (~> 6.0.0)
   shoulda-matchers (~> 3.0)
+  sneakers
   tzinfo-data
 
 RUBY VERSION
