@@ -1,0 +1,9 @@
+---
+:concurrency: <%= ENV['SIDEKIQ_CONCURRENCY'] || 10 %>
+staging:
+  :concurrency: 10
+production:
+  :concurrency: <%= ENV['SIDEKIQ_CONCURRENCY'] || 10 %>
+:queues:
+  - default
+  - subscriber_safeguard
