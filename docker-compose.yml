@@ -38,10 +38,26 @@ services:
     - .env
     command: redis-server
     ports:
-      - "6380:6380"
+      - "6379:6379"
     expose:
-      - "6380"
+      - "6379"
     networks:
+      - default
+  sidekiq:
+    stdin_open: true
+    tty: true
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    env_file:
+    - .env
+    environment:
+      - RAILS_URL=http://web:3000 # overwrite to match docker
+    command: bundle exec sidekiq -C config/sidekiq.yml
+    volumes:
+      - .:/app
+    networks:
+      - broker-project
       - default
   sneakers:
     stdin_open: true
