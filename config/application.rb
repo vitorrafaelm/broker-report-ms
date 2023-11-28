@@ -24,6 +24,18 @@ module BrokerReportMs
     config.load_defaults 7.0
 
     config.autoloader = :classic
+
+    config.active_job.queue_adapter = :sidekiq
+
+    # This also configures session_options for use below
+    config.session_store :cookie_store, key: '_interslice_session'
+
+    # Required for all session management (regardless of session_store)
+    config.middleware.use ActionDispatch::Cookies
+
+    config.middleware.use config.session_store, config.session_options
+
+
     # config.active_job.queue_adapter = :sneakers
 
     # Configuration for the application, engines, and railties goes here.
