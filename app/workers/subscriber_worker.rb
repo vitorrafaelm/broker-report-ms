@@ -3,8 +3,7 @@ class SubscriberWorker
 
   sidekiq_options queue: 'subscriber_safeguard'
 
-  def perform(message)
-    puts 'chegou aqui no perform ------------------------------------------------------'
-    Rabbitmq::Subscribers::Actions::BrokerCreated.new(message).execute
+  def perform(event_type, message)
+    Rabbitmq::Subscriber.new(event_type: event_type, message: message).execute
   end
 end
