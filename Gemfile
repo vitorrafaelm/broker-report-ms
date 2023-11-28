@@ -37,6 +37,9 @@ gem 'sneakers'
 gem 'json'
 gem 'redis'
 gem 'sidekiq'
+gem 'json-schema'
+gem 'pry-rails', '~> 0.3.4'
+gem 'pry-byebug'
 
 # Use Active Storage variants [https://guides.rubyonrails.org/active_storage_overview.html#transforming-images]
 # gem "image_processing", "~> 1.2"

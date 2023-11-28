@@ -66,6 +66,8 @@ GEM
       i18n (>= 1.6, < 2)
       minitest (>= 5.1)
       tzinfo (~> 2.0)
+    addressable (2.8.5)
+      public_suffix (>= 2.0.2, < 6.0)
     amq-protocol (2.3.2)
     bootsnap (1.17.0)
       msgpack (~> 1.2)
@@ -73,6 +75,8 @@ GEM
     bunny (2.22.0)
       amq-protocol (~> 2.3, >= 2.3.1)
       sorted_set (~> 1, >= 1.0.2)
+    byebug (11.1.3)
+    coderay (1.1.3)
     concurrent-ruby (1.2.2)
     connection_pool (2.4.1)
     crass (1.0.6)
@@ -96,6 +100,8 @@ GEM
       rdoc
       reline (>= 0.3.8)
     json (2.6.3)
+    json-schema (4.1.1)
+      addressable (>= 2.8)
     jsonapi-serializer (2.2.0)
       activesupport (>= 4.2)
     kramdown (2.4.0)
@@ -132,8 +138,17 @@ GEM
     nokogiri (1.15.4-arm64-darwin)
       racc (~> 1.4)
     pg (1.5.4)
+    pry (0.14.2)
+      coderay (~> 1.1)
+      method_source (~> 1.0)
+    pry-byebug (3.10.1)
+      byebug (~> 11.0)
+      pry (>= 0.13, < 0.15)
+    pry-rails (0.3.9)
+      pry (>= 0.10.4)
     psych (5.1.1.1)
       stringio
+    public_suffix (5.0.4)
     puma (5.6.7)
       nio4r (~> 2.0)
     racc (1.7.2)
@@ -237,9 +252,12 @@ DEPENDENCIES
   debug
   factory_bot_rails
   json
+  json-schema
   jsonapi-serializer
   kramdown
   pg (~> 1.1)
+  pry-byebug
+  pry-rails (~> 0.3.4)
   puma (~> 5.0)
   rails (~> 7.0.8)
   rake
